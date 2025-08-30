@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Nạp tiền cho Bố</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 25px;
+      border-radius: 14px;
+      max-width: 420px;
+      margin: auto;
+      box-shadow: 0px 0px 20px rgba(0,0,0,0.6);
+    }
+    h2 { color: #ffd700; }
+    input {
+      padding: 10px;
+      width: 90%;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background: #ff5722;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 5px;
+    }
+    button:hover { background: #e64a19; }
+    .secondary {
+      background: #2196f3;
+    }
+    .secondary:hover { background: #1976d2; }
+    img {
+      margin-top: 20px;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🐝 Nạp tiền cho Bố 🐝</h2>
+    <p>Ngân hàng: <b>MB Bank</b></p>
+    <p>Chủ TK: <b>NGUYEN VAN CHIEN</b></p>
+    <p>Số TK: <b id="stk">0774105846</b></p>
+
+    <button onclick="copyStk()">📋 Copy số TK</button>
+    <button class="secondary" onclick="shareLink()">📤 Chia sẻ link</button>
+
+    <input type="number" id="amount" placeholder="Nhập số tiền (VND)">
+    <button onclick="generateQR()">Hiện QR</button>
+
+    <div id="qrArea"></div>
+  </div>
+
+  <script>
+    function copyStk() {
+      let stk = document.getElementById("stk").innerText;
+      navigator.clipboard.writeText(stk).then(() => {
+        alert("Đã copy số tài khoản: " + stk);
+      });
+    }
+
+    function shareLink() {
+      let link = window.location.href;
+      if (navigator.share) {
+        navigator.share({
+          title: "Nạp tiền cho Bố",
+          text: "Quét QR hoặc chuyển khoản cho Bố dễ dàng tại link này:",
+          url: link
+        });
+      } else {
+        navigator.clipboard.writeText(link);
+        alert("Link đã được copy: " + link);
+      }
+    }
+
+    function generateQR() {
+      let amount = document.getElementById("amount").value;
+      if (!amount || amount <= 0) {
+        alert("Vui lòng nhập số tiền hợp lệ!");
+        return;
+      }
+
+      let bank = "970422"; // MB Bank BIN
+      let account = "0774105846";
+      let name = "NGUYEN VAN CHIEN";
+
+      let url = `https://img.vietqr.io/image/${bank}-${account}-compact.png?amount=${amount}&addInfo=NapTienChoBo&accountName=${encodeURIComponent(name)}`;
+
+      document.getElementById("qrArea").innerHTML = `
+        <p>Quét QR để chuyển <b>${amount} VND</b> cho Bố:</p>
+        <img src="${url}" alt="QR chuyển tiền">
+      `;
+    }
+  </script>
+</body>
+</html>
